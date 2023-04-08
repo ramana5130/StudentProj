@@ -5,6 +5,7 @@ import com.lafoot.StudentProj.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class StudentController {
     private StudentService service;
 
     @PostMapping("/save")
-    public ResponseEntity<String> saveStudent(@RequestBody Student student) {
+    public ResponseEntity<String> saveStudent(@RequestBody @Validated Student student) {
         Student savedStudent = service.saveStudent(student);
         String response = "Student registered";
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -36,10 +37,11 @@ public class StudentController {
     }
 
     @PutMapping("/update/{sId}")
-    public ResponseEntity<Student> updateStudent(@RequestBody Student student, @PathVariable Long sId) {
+    public ResponseEntity<Student> updateStudent(@PathVariable Long sId, @RequestBody Student student) {
         Student updatedStudent = service.updateStudent(student, sId);
         return new ResponseEntity<>(updatedStudent, HttpStatus.OK);
     }
+
     @DeleteMapping("/delete/{sId}")
     public ResponseEntity<String> delete(@PathVariable Long sId) {
         String message = service.deleteStudentbyId(sId);
