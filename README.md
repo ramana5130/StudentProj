@@ -1,0 +1,2 @@
+# StudentProj
+Student Management Application
