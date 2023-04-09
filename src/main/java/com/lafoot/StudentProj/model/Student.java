@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,6 +19,9 @@ public class Student {
     private Long studentId;
     private String name;
     private String age;
-    @OneToMany(cascade = CascadeType.ALL)
+
+    @OneToMany(
+            mappedBy = "student",
+            cascade = CascadeType.ALL)
     private List<Address> addresses;
 }

@@ -11,7 +11,7 @@ public interface StudentService {
 
     public Student fetchOneStudent(Long sId);
 
-    public Student updateStudent(Student student, Long sId);
+    public Student updateStudent(Long sId,Student student);
 
     public String deleteStudentbyId(Long sId);
 }

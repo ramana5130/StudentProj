@@ -7,6 +7,7 @@ import com.lafoot.StudentProj.repo.AddressRepository;
 import com.lafoot.StudentProj.repo.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,50 +42,60 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student updateStudent(Student student, Long sId) {
-        /*Student existigStudent = repository.findById(sId).orElseThrow(() -> new StudentNotFoundException("Student with id " + sId + "not found"));
-        existigStudent.setName(student.getName());
-        existigStudent.setAge(student.getAge());
-        //existigStudent.setAddresses(student.getAddresses());
+    //@Transactional
+    public Student updateStudent(Long sId, Student student) {
 
-        List<Address> existingAddresses = existigStudent.getAddresses();
+        /*Student existingStudent = repository.findById(sId).orElseThrow(() -> new StudentNotFoundException("Student with id " + sId + " not found"));
+        existingStudent.setName(student.getName());
+        existingStudent.setAge(student.getAge());
+
         List<Address> updatedAddresses = student.getAddresses();
+        List<Address> existingAddresses = existingStudent.getAddresses();
 
         for (Address updatedAddress : updatedAddresses) {
             Optional<Address> optionalExistingAddress = addressRepository.findById(updatedAddress.getAddressId());
             if (optionalExistingAddress.isPresent()) {
+                // Update existing address with new information
                 Address existingAddress = optionalExistingAddress.get();
                 existingAddress.setCity(updatedAddress.getCity());
                 existingAddress.setCountry(updatedAddress.getCountry());
-                existingAddress.setStudent(existigStudent);
-                existingAddresses.add(existingAddress);
+            } else {
+                // Add new address to list of existing addresses for the student
+                updatedAddress.setStudent(existingStudent);
+                existingAddresses.add(updatedAddress);
+            }
+        }
+        existingStudent.setAddresses(existingAddresses);
+        return repository.save(existingStudent);*/
+
+        Student existingStudent = repository.findById(sId)
+                .orElseThrow(() -> new StudentNotFoundException("Student with id " + sId + " not found"));
+
+        existingStudent.setName(student.getName());
+        existingStudent.setAge(student.getAge());
+
+
+        List<Address> existingAddresses = addressRepository.findByStudentId(sId);
+        List<Address> updatedAddresses = student.getAddresses();
+
+        for (Address updatedAddress : updatedAddresses) {
+            Optional<Address> optionalExistingAddress = existingAddresses.stream()
+                    .filter(a -> a.getAddressId().equals(updatedAddress.getAddressId()))
+                    .findFirst();
+
+            if (optionalExistingAddress.isPresent()) {
+                Address existingAddress = optionalExistingAddress.get();
+                existingAddress.setCity(updatedAddress.getCity());
+                existingAddress.setCountry(updatedAddress.getCountry());
+                existingAddress.setStudent(existingStudent);
+            } else {
+                updatedAddress.setStudent(existingStudent);
+                existingAddresses.add(updatedAddress);
             }
         }
 
-        // Remove any Address entities that are no longer associated with the Student
-        List<Address> removedAddresses = new ArrayList<>();
-        for (Address existingAddress : existingAddresses) {
-            boolean isPresent = false;
-            for (Address updatedAddress : updatedAddresses) {
-                if (existingAddress.getAddressId().equals(updatedAddress.getAddressId())) {
-                    isPresent = true;
-                    break;
-                }
-            }
-            if (!isPresent) {
-                removedAddresses.add(existingAddress);
-            }
-        }
-        existingAddresses.removeAll(removedAddresses);
-
-        existigStudent.setAddresses(existingAddresses);*/
-
-        Student existigStudent = repository.findById(sId).orElseThrow(() -> new StudentNotFoundException("Student with id " + sId + "not found"));
-        existigStudent.setName(student.getName());
-        existigStudent.setAge(student.getAge());
-        existigStudent.setAddresses(student.getAddresses());
-
-        return repository.save(existigStudent);
+        existingStudent.setAddresses(student.getAddresses());
+        return repository.save(existingStudent);
     }
 
     @Override

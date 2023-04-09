@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
@@ -38,7 +39,8 @@ public class StudentController {
 
     @PutMapping("/update/{sId}")
     public ResponseEntity<Student> updateStudent(@PathVariable Long sId, @RequestBody Student student) {
-        Student updatedStudent = service.updateStudent(student, sId);
+        System.out.println("Student id in update method = " + sId);
+        Student updatedStudent = service.updateStudent(sId, student);
         return new ResponseEntity<>(updatedStudent, HttpStatus.OK);
     }
 
