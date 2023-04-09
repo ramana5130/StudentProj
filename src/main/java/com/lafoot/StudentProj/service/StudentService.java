@@ -1,11 +1,12 @@
 package com.lafoot.StudentProj.service;
 
+import com.lafoot.StudentProj.exception.DuplicateRecordException;
 import com.lafoot.StudentProj.model.Student;
 
 import java.util.List;
 
 public interface StudentService {
-    public Student saveStudent(Student student);
+    public Student saveStudent(Student student) throws DuplicateRecordException;
 
     public List<Student> fetchAll();
 

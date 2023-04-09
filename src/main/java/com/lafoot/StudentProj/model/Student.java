@@ -1,5 +1,6 @@
 package com.lafoot.StudentProj.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,10 +15,14 @@ import java.util.List;
 public class Student {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long studentId;
     private String name;
-    private String age;
-    @OneToMany(cascade = CascadeType.ALL)
+    private int age;
+
+    @JsonManagedReference
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            mappedBy = "student")
     private List<Address> addresses;
 }
